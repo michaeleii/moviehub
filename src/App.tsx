@@ -23,7 +23,7 @@ export interface MovieItem {
   Year: string;
 }
 function average(arr: number[]) {
-  return arr.reduce((acc, cur, _, arr) => acc + cur / arr.length, 0).toFixed(1);
+  return arr.reduce((acc, cur, _, arr) => acc + cur / arr.length, 0).toFixed(2);
 }
 
 export default function App() {
@@ -335,7 +335,7 @@ function WatchedMovie({
       <div>
         <p>
           <span>⭐️</span>
-          <span>{movie.imdbRating}</span>
+          <span>{movie.imdbRating || "N/A"}</span>
         </p>
         <p>
           <span>🌟</span>
@@ -343,7 +343,7 @@ function WatchedMovie({
         </p>
         <p>
           <span>⏳</span>
-          <span>{movie.Runtime} min</span>
+          <span>{movie.Runtime || "N/A"} min</span>
         </p>
 
         <button
@@ -357,9 +357,13 @@ function WatchedMovie({
   );
 }
 function WatchedSummary({ watched }: { watched: MovieItem[] }) {
-  const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
+  const avgImdbRating = average(
+    watched.filter((movie) => movie.imdbRating).map((movie) => movie.imdbRating)
+  );
   const avgUserRating = average(watched.map((movie) => movie.userRating));
-  const avgRuntime = average(watched.map((movie) => movie.Runtime));
+  const avgRuntime = average(
+    watched.filter((movie) => movie.Runtime).map((movie) => movie.Runtime)
+  );
   return (
     <div className="summary">
       <h2>Movies you watched</h2>
