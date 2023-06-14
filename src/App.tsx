@@ -29,7 +29,7 @@ function average(arr: number[]) {
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([] as MovieItem[]);
-  const [query, setQuery] = useState("interstellar");
+  const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState("");
@@ -48,6 +48,7 @@ export default function App() {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
     async function fetchMovies() {
       try {
         setError("");
@@ -55,7 +56,8 @@ export default function App() {
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
-          }&s=${query}`
+          }&s=${query}`,
+          { signal: controller.signal }
         );
         if (!res.ok)
           throw new Error("Something went wrong with fetching movies.");
@@ -63,8 +65,9 @@ export default function App() {
         if (data.Response === "False") throw new Error("Movie not found.");
         setMovies(data.Search);
       } catch (err: any) {
-        console.error(err);
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -74,7 +77,11 @@ export default function App() {
       setError("");
       return;
     }
+    handleCloseMovie();
     fetchMovies();
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -215,6 +222,19 @@ function MovieDetails({
   }
 
   useEffect(() => {
+    const cb = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onCloseMovie();
+      }
+    };
+    document.addEventListener("keydown", cb);
+    return () => {
+      document.removeEventListener("keydown", cb);
+    };
+  }, [onCloseMovie]);
+
+  useEffect(() => {
+    const controller = new AbortController();
     async function getMovieDetails() {
       try {
         setError("");
@@ -222,26 +242,33 @@ function MovieDetails({
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
-          }&i=${selectedId}`
+          }&i=${selectedId}`,
+          { signal: controller.signal }
         );
+
         if (!res.ok)
           throw new Error("Something went wrong with fetching movies.");
         const data = await res.json();
         setMovie(data);
       } catch (err: any) {
-        console.error(err);
-        setError(err.message);
+        if (err.name !== "AbortError") {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
     }
     getMovieDetails();
+    return () => {
+      controller.abort();
+    };
   }, [selectedId]);
   useEffect(() => {
     if (!movie.Title) return;
     document.title = `Movie | ${movie.Title}`;
     return () => {
       document.title = "MovieHub";
+      // console.log(`cleanup ${movie.Title}`);
     };
   }, [movie.Title]);
   return (
@@ -254,7 +281,7 @@ function MovieDetails({
               &larr;
             </button>
             <img
-              src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.jpg"}
+              src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
               alt={`Poster of ${movie.Title} movie`}
             />
             <div className="details-overview">
