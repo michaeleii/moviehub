@@ -101,6 +101,7 @@ export default function App() {
         <Box>
           {selectedId ? (
             <MovieDetails
+              key={Date.now()}
               selectedId={selectedId}
               onCloseMovie={handleCloseMovie}
               onAddMovie={handleAddMovie}
