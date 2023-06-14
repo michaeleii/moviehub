@@ -281,7 +281,7 @@ function MovieDetails({
               &larr;
             </button>
             <img
-              src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+              src={movie.Poster !== "N/A" ? movie.Poster : "./no-image.png"}
               alt={`Poster of ${movie.Title} movie`}
             />
             <div className="details-overview">
@@ -361,7 +361,7 @@ function WatchedMovie({
   return (
     <li key={movie.imdbID}>
       <img
-        src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+        src={movie.Poster !== "N/A" ? movie.Poster : "./no-image.png"}
         alt={`${movie.Title} poster`}
       />
       <h3>{movie.Title}</h3>
@@ -460,7 +460,7 @@ function Movie({
   return (
     <li key={movie.imdbID} onClick={() => onSelectMovie(movie.imdbID)}>
       <img
-        src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+        src={movie.Poster !== "N/A" ? movie.Poster : "./no-image.png"}
         alt={`${movie.Title} poster`}
       />
       <h3>{movie.Title}</h3>
