@@ -253,7 +253,10 @@ function MovieDetails({
             <button className="btn-back" onClick={onCloseMovie}>
               &larr;
             </button>
-            <img src={movie.Poster} alt={`Poster of ${movie.Title} movie`} />
+            <img
+              src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.jpg"}
+              alt={`Poster of ${movie.Title} movie`}
+            />
             <div className="details-overview">
               <h2>{movie.Title}</h2>
               <p>
@@ -330,7 +333,10 @@ function WatchedMovie({
 }) {
   return (
     <li key={movie.imdbID}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
+      <img
+        src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+        alt={`${movie.Title} poster`}
+      />
       <h3>{movie.Title}</h3>
       <div>
         <p>
@@ -426,7 +432,10 @@ function Movie({
 }) {
   return (
     <li key={movie.imdbID} onClick={() => onSelectMovie(movie.imdbID)}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
+      <img
+        src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+        alt={`${movie.Title} poster`}
+      />
       <h3>{movie.Title}</h3>
       <div>
         <p>
