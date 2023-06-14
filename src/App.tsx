@@ -54,7 +54,7 @@ export default function App() {
         setError("");
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${
+          `https://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
           }&s=${query}`,
           { signal: controller.signal }
@@ -240,7 +240,7 @@ function MovieDetails({
         setError("");
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${
+          `https://www.omdbapi.com/?apikey=${
             import.meta.env.VITE_OMDB_API_KEY
           }&i=${selectedId}`,
           { signal: controller.signal }
