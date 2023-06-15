@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./components/StarRating";
 import { useMovies } from "./useMovies";
 import { useLocalStorageState } from "./useLocalStorageState";
+import { useKey } from "./useKey";
 
 export interface MovieData {
   Poster: string;
@@ -143,18 +144,12 @@ function Search({
   setQuery: (query: string) => void;
 }) {
   const inputEl = useRef<null | HTMLInputElement>(null);
-  useEffect(() => {
-    function cb(e: KeyboardEvent) {
-      if (document.activeElement === inputEl.current) return;
-      if (e.key === "Enter") {
-        inputEl.current?.focus();
-        setQuery("");
-      }
-    }
-    document.addEventListener("keydown", cb);
+  useKey("Enter", () => {
+    if (document.activeElement === inputEl.current) return;
     inputEl.current?.focus();
-    return () => document.removeEventListener("keydown", cb);
-  }, [setQuery]);
+    setQuery("");
+  });
+
   return (
     <input
       className="search"
@@ -202,19 +197,7 @@ function MovieDetails({
     onAddMovie(newWatchedMovie);
     onCloseMovie();
   }
-
-  useEffect(() => {
-    const cb = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onCloseMovie();
-      }
-    };
-    document.addEventListener("keydown", cb);
-    return () => {
-      document.removeEventListener("keydown", cb);
-    };
-  }, [onCloseMovie]);
-
+  useKey("Escape", onCloseMovie);
   useEffect(() => {
     const controller = new AbortController();
     async function getMovieDetails() {
